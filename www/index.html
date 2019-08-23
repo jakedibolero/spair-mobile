@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'unsafe-inline' 'unsafe-eval' *">
+    <link rel="icon" type="image/png" href="assets/img/circle_logo.png" />
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!-- CSS Files -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="assets/css/demo.css" rel="stylesheet" />
+    <link href="assets/css/animate.css" rel="stylesheet" />
+    <link href="assets/css/w3.css" rel="stylesheet" />
+
+    <!-- Fonts and Icons -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="assets/css/themify-icons.css" rel="stylesheet">
+</head>
+<style type="text/css">
+    html { 
+  background: url(images/bg.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+</style>
+<body>
+    <div class="image-container set-full-height animated fast zoomIn" style="background-image: url('assets/img/soft.jpg'); background-color: #294b88 !important;">
+         <button class="w3-button w3-teal w3-xlarge w3-right w3-home" style="position: absolute; outline: none; right: 0; text-decoration: none; border: none;" onclick="openRightMenu()" >&#9776;</button>
+        <div class="container" >
+            <!--Side Bar -->
+            <div class="w3-sidebar w3-bar-block w3-card w3-animate-right" style=" display:none; right: 0; z-index: 1000 !important;" id="rightMenu">
+              <button onclick="closeRightMenu()" class="w3-bar-item w3-button w3-large" style="text-align: right; text-decoration: none;">Close &times;</button>
+              <a href="index.html" class="w3-bar-item w3-button">Home</a>
+              <a href="admin.html" class="w3-bar-item w3-button">Admin</a>
+              <a href="#" class="w3-bar-item w3-button">About</a>
+              
+            </div>
+            <div class="row" >
+                <div class="col-sm-8 col-sm-offset-2">
+
+                    <!--      Wizard container        -->
+                    <div class="wizard-container"  >
+                        <div class="card wizard-card " data-color="green" id="wizard">
+                        <form action="" method="">
+                        <!--        You can switch " data-color="green" "  with one of the next bright colors: "blue", "azure", "orange", "red"       -->
+
+                                <div class="wizard-header" style=" position: relative;">
+                                    <img src="assets/img/sgairline.png" class="adb-logo">
+                                </div>
+
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="flight-code" placeholder="Flight Code">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div class="form-group">
+                                                    <input type="Number" class="form-control" id="flight-number" placeholder="Flight Number">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-5 col-sm-offset-1">
+                                                <div  class="form-group">
+                                                    <input style="display:none" type="date" class="form-control" id="flight-date" placeholder="date">
+                                                </div>
+                                            </div>
+
+                                <div class="col-sm-12" style="text-align: center;">
+
+                                    <div style="margin-left: auto; margin-right: auto;">
+                                       <input type='button' onclick="getFlightInfo()" class='btn btn-finish btn-fill btn-wd loginBtn' name='finish' value='Find' /></a>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div> <!-- wizard container -->
+                </div>
+            </div> <!-- row -->
+        </div> <!--  big container -->
+    </div>
+
+    <script src="js/jquery-2.2.4.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/ip.js"></script>
+
+    <script>
+        function onConfirm(buttonIndex) {
+    alert('You selected button ' + buttonIndex);
+}
+
+
+    function getFlightInfo(){
+//         setTimeout(function(){
+//             navigator.vibrate(2000);
+//             cordova.plugins.notification.local.schedule({
+//     title: 'My first notification',
+//     text: 'Thats pretty easy...',
+//     foreground: true
+// });
+//         },2000)
+
+        var flightNum = $("#flight-number").val()
+        if(flightNum.length == 2){
+        flightNum = "00"+flightNum;
+        }else if(flightNum.length ==3){
+        flightNum = "0"+flightNum
+        }  
+        navigator.vibrate(500);
+        var data = {};
+        data.flightDate=$("#flight-date").val();
+        data.flightNumber=flightNum;
+        data.flightCode=$("#flight-code").val().toUpperCase();
+
+        localStorage.setItem("flight", JSON.stringify(data));
+        window.location.replace("flightInfo.html");
+        // $.ajax({
+        //             type: "POST",
+        //             url: `${ip}/getNumber`,
+        //              datatype: "json",
+        //             contentType: "application/json; charset=utf-8",
+        //             data: JSON.stringify(data),
+             
+        //             success: function (result) {
+        //                 console.log(JSON.stringify(result));                               
+        //             },
+        //             error: function (ex) {
+        //                 }
+        //             }); 
+    }
+
+    function getFlightUpdates() {
+                var counter = 0;
+                var id = setInterval(function(){ 
+                    if(counter == 0){
+                        console.log("Hello"); 
+                    $.ajax({
+                    type: "GET",
+                    async: true,
+                    url: "http://192.168.0.42:3001/ClientCall",
+                    dataType: "json",
+                    success: function (result) {
+                    
+                    },
+                    error: function (ex) {
+                        
+                    }
+                    }); 
+                }}, 5000);
+    }
+
+
+    function test(){
+        $.ajax({
+    url: "https://reqres.in/api/users",
+    type: "POST",
+    data: {
+        name: "paul rudd",
+        movies: ["I Love You Man", "Role Models"]
+    },
+    success: function(response){
+        alert(JSON.stringify(response));
+    },
+    error:function(){
+        alert("EW");
+    }
+    });
+    
+    }
+
+    function test2(){
+         $.ajax({
+    url: `${ip}/tester`,
+    type: "POST",
+    data: {
+        name: "paul rudd",
+        movies: ["I Love You Man", "Role Models"]
+    },
+    success: function(response){
+        alert(JSON.stringify(response));
+    },
+    error:function(){
+        alert("EW");
+    }
+    });
+    
+    }
+    </script>
+</body>
+
+    <!--   Core JS Files   -->
+    <script src="assets/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+    <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="assets/js/jquery.bootstrap.wizard.js" type="text/javascript"></script>
+    <!--  Plugin for the Wizard -->
+    <script src="assets/js/paper-bootstrap-wizard.js" type="text/javascript"></script>
+    <!--  More information about jquery.validate here: http://jqueryvalidation.org/  -->
+    <script src="assets/js/jquery.validate.min.js" type="text/javascript"></script>
+      <script>
+        function openRightMenu() {
+          document.getElementById("rightMenu").style.display = "block";
+        }
+
+        function closeRightMenu() {
+          document.getElementById("rightMenu").style.display = "none";
+        }
+    </script>
+    
+</html>
